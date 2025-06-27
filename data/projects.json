@@ -1,0 +1,41 @@
+[
+  {
+    "id": "proj-1",
+    "name": "إعادة تصميم الموقع الرئيسي",
+    "description": "مشروع شامل لتحديث الموقع الرئيسي وتحسين تجربة المستخدم",
+    "status": "قيد التقدم",
+    "priority": "عالية",
+    "startDate": "2025-05-01",
+    "endDate": "2025-07-30",
+    "progress": 65,
+    "budget": 50000,
+    "team": ["user-1", "user-2"],
+    "tasks": ["task-1", "task-2", "task-3"]
+  },
+  {
+    "id": "proj-2",
+    "name": "حملة تسويقية جديدة",
+    "description": "إطلاق حملة تسويقية رقمية للمنتج الجديد",
+    "status": "مكتمل",
+    "priority": "متوسطة",
+    "startDate": "2025-04-15",
+    "endDate": "2025-06-10",
+    "progress": 100,
+    "budget": 25000,
+    "team": ["user-2", "user-3"],
+    "tasks": ["task-4", "task-5"]
+  },
+  {
+    "id": "proj-3",
+    "name": "تطوير تطبيق الجوال",
+    "description": "بناء تطبيق جوال متوافق مع iOS و Android",
+    "status": "مخطط",
+    "priority": "عالية",
+    "startDate": "2025-08-01",
+    "endDate": "2025-12-31",
+    "progress": 0,
+    "budget": 75000,
+    "team": ["user-1", "user-3"],
+    "tasks": []
+  }
+]

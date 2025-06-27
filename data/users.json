@@ -1,0 +1,35 @@
+[
+  {
+    "id": "user-1",
+    "name": "أحمد محمد",
+    "email": "ahmed@example.com",
+    "role": "مطور واجهة أمامية",
+    "department": "التطوير",
+    "avatar": "/avatars/ahmed.jpg",
+    "skills": ["React", "TypeScript", "CSS", "UI/UX"],
+    "tasksCompleted": 12,
+    "currentTasks": 3
+  },
+  {
+    "id": "user-2",
+    "name": "سارة أحمد",
+    "email": "sara@example.com", 
+    "role": "مطور خلفي",
+    "department": "التطوير",
+    "avatar": "/avatars/sara.jpg",
+    "skills": ["Node.js", "Python", "Database", "API"],
+    "tasksCompleted": 8,
+    "currentTasks": 2
+  },
+  {
+    "id": "user-3",
+    "name": "ليلى خالد",
+    "email": "layla@example.com",
+    "role": "مديرة تسويق",
+    "department": "التسويق",
+    "avatar": "/avatars/layla.jpg",
+    "skills": ["Marketing", "Social Media", "Content", "Analytics"],
+    "tasksCompleted": 15,
+    "currentTasks": 1
+  }
+]

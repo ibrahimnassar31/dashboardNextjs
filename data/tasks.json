@@ -1,0 +1,67 @@
+[
+  {
+    "id": "task-1",
+    "projectId": "proj-1",
+    "name": "تطوير واجهة المستخدم",
+    "description": "تصميم وتطوير واجهة المستخدم الجديدة",
+    "status": "قيد التنفيذ",
+    "priority": "عالية",
+    "dueDate": "2025-06-20",
+    "assignedTo": "user-1",
+    "estimatedHours": 40,
+    "completedHours": 25,
+    "tags": ["frontend", "ui", "design"]
+  },
+  {
+    "id": "task-2",
+    "projectId": "proj-1",
+    "name": "ربط الـ API",
+    "description": "ربط الواجهة الأمامية بالخدمات الخلفية",
+    "status": "معلق",
+    "priority": "متوسطة",
+    "dueDate": "2025-07-05",
+    "assignedTo": "user-2",
+    "estimatedHours": 30,
+    "completedHours": 0,
+    "tags": ["backend", "api", "integration"]
+  },
+  {
+    "id": "task-3",
+    "projectId": "proj-1",
+    "name": "اختبار الجودة",
+    "description": "إجراء اختبارات شاملة للتأكد من جودة المنتج",
+    "status": "لم يبدأ",
+    "priority": "متوسطة",
+    "dueDate": "2025-07-20",
+    "assignedTo": "user-1",
+    "estimatedHours": 20,
+    "completedHours": 0,
+    "tags": ["testing", "qa", "quality"]
+  },
+  {
+    "id": "task-4",
+    "projectId": "proj-2",
+    "name": "تطوير المحتوى التسويقي",
+    "description": "كتابة وتصميم المحتوى للحملة التسويقية",
+    "status": "مكتمل",
+    "priority": "عالية",
+    "dueDate": "2025-05-15",
+    "assignedTo": "user-2",
+    "estimatedHours": 25,
+    "completedHours": 25,
+    "tags": ["marketing", "content", "design"]
+  },
+  {
+    "id": "task-5",
+    "projectId": "proj-2",
+    "name": "إطلاق الحملة",
+    "description": "تنفيذ ومتابعة الحملة التسويقية عبر القنوات المختلفة",
+    "status": "مكتمل",
+    "priority": "عالية",
+    "dueDate": "2025-06-01",
+    "assignedTo": "user-3",
+    "estimatedHours": 15,
+    "completedHours": 15,
+    "tags": ["marketing", "social-media", "advertising"]
+  }
+]
