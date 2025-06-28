@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { ProjectsGrid } from '@/components/ProjectsGrid';
-import { ProjectForm } from '@/components/ProjectForm';
+import { EntityForm } from '@/components/EntityForm';
 
 export default function ProjectsPage() {
   const [showModal, setShowModal] = useState(false);
@@ -90,7 +90,8 @@ export default function ProjectsPage() {
             tabIndex={-1}
           >
             <h2 className="text-xl font-bold mb-8">إضافة مشروع جديد</h2>
-            <ProjectForm
+            <EntityForm
+              type="project"
               onSubmit={handleAddProject}
               loading={loading}
               error={error}

@@ -2,36 +2,7 @@ import { getProject, getTasksByProject, getUsers } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRightIcon, CalendarIcon, UsersIcon, DollarSignIcon, CheckSquareIcon } from 'lucide-react';
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case 'مكتمل':
-      return 'bg-green-100 text-green-800';
-    case 'قيد التنفيذ':
-      return 'bg-blue-100 text-blue-800';
-    case 'مخطط':
-      return 'bg-gray-100 text-gray-800';
-    case 'معلق':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'لم يبدأ':
-      return 'bg-gray-100 text-gray-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}
-
-function getPriorityColor(priority: string) {
-  switch (priority) {
-    case 'عالية':
-      return 'bg-red-100 text-red-800';
-    case 'متوسطة':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'منخفضة':
-      return 'bg-green-100 text-green-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}
+import { getStatusColor, getPriorityColor } from '@/lib/taskUtils';
 
 export default async function ProjectDetailPage(props: any) {
   const params = await props.params;

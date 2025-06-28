@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { TaskForm } from '@/components/TaskForm';
+import { EntityForm } from '@/components/EntityForm';
 import { TasksSummaryCards } from '@/components/TasksSummaryCards';
 import { TasksKanbanBoard } from '@/components/TasksKanbanBoard';
 import { TasksTable } from '@/components/TasksTable';
@@ -8,7 +8,7 @@ import { useTasksData } from '@/hooks/useTasksData';
 import { Toast } from '@/components/Toast';
 
 export default function TasksPage() {
-  const { tasks, setTasks, users, projects, loading, error, reload } = useTasksData();
+  const { tasks, setTasks, users, projects,  } = useTasksData();
   const [showModal, setShowModal] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -63,6 +63,38 @@ export default function TasksPage() {
     }
   };
 
+  // Handle status change from Kanban DND
+  const handleTaskStatusChange = async (taskId: string, newStatus: string, newIndex: number) => {
+    setTasks((prev: any[]) => {
+      const taskIndex = prev.findIndex((t: any) => t.id === taskId);
+      if (taskIndex === -1) return prev;
+
+      const updatedTask = { ...prev[taskIndex], status: newStatus };
+      // Remove the task from its old position
+      const tasksWithout = prev.filter((t: any) => t.id !== taskId);
+
+      // Find all tasks with the new status
+      const before = tasksWithout.filter((t: any) => t.status !== newStatus);
+      const sameStatus = tasksWithout.filter((t: any) => t.status === newStatus);
+
+      // Insert the updated task at the new index
+      sameStatus.splice(newIndex, 0, updatedTask);
+
+      return [...before, ...sameStatus];
+    });
+
+    try {
+      const res = await fetch(`/api/tasks/${taskId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      showToast('تعذر تحديث حالة المهمة على الخادم', 'error');
+    }
+  };
+
   return (
     <div className="space-y-6">
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
@@ -80,7 +112,8 @@ export default function TasksPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={() => setShowModal(false)} aria-modal="true" role="dialog">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md" onClick={e => e.stopPropagation()} tabIndex={-1}>
             <h2 className="text-xl font-bold mb-4">إضافة مهمة جديدة</h2>
-            <TaskForm
+            <EntityForm
+              type="task"
               onSubmit={handleAddTask}
               loading={formLoading}
               error={formError}
@@ -96,7 +129,7 @@ export default function TasksPage() {
       <TasksSummaryCards tasks={tasks} />
 
       {/* Kanban Board */}
-      <TasksKanbanBoard tasks={tasks} users={users} projects={projects} onDeleteTask={handleDeleteTask} />
+      <TasksKanbanBoard tasks={tasks} users={users} projects={projects} onDeleteTask={handleDeleteTask} onTaskStatusChange={handleTaskStatusChange} />
 
       {/* Task Table */}
       <TasksTable tasks={tasks} users={users} projects={projects} />

@@ -4,6 +4,7 @@ import { CalendarIcon, UsersIcon, DollarSignIcon, Trash2Icon } from 'lucide-reac
 import Link from 'next/link';
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getPriorityColor, getStatusColor } from '@/lib/taskUtils';
 
 interface Project {
   id: string;
@@ -17,34 +18,6 @@ interface Project {
   team: { id: string; name: string }[];
   budget: number;
   tasks: { id: string; name: string }[];
-}
-
-function getPriorityColor(priority: Project['priority']): string {
-  switch (priority) {
-    case 'عالية':
-      return 'bg-red-100 text-red-800';
-    case 'متوسطة':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'منخفضة':
-      return 'bg-green-100 text-green-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}
-
-function getStatusColor(status: Project['status']): string {
-  switch (status) {
-    case 'مكتمل':
-      return 'bg-green-100 text-green-800';
-    case 'قيد التقدم':
-      return 'bg-blue-100 text-blue-800';
-    case 'مخطط':
-      return 'bg-gray-100 text-gray-800';
-    case 'معلق':
-      return 'bg-yellow-100 text-yellow-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
 }
 
 interface DeleteModalProps {

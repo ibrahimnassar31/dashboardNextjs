@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { CalendarIcon, UserIcon, ClockIcon, Trash2Icon } from 'lucide-react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
+import { TaskCard } from './TaskCard';
 import type { Task, User, Project } from '@/lib/data';
-import { getPriorityColor, isOverdue } from '@/lib/taskUtils';
 
 const STATUS_LABELS = ['لم يبدأ', 'قيد التنفيذ', 'معلق', 'مكتمل'];
 
@@ -11,39 +10,70 @@ interface TasksKanbanBoardProps {
   users: User[];
   projects: Project[];
   onDeleteTask?: (taskId: string) => void;
+  onTaskStatusChange?: (taskId: string, newStatus: string, newIndex: number) => void;
 }
 
-export function TasksKanbanBoard({ tasks, users, projects, onDeleteTask }: TasksKanbanBoardProps) {
+export function TasksKanbanBoard({ tasks, users, projects, onDeleteTask, onTaskStatusChange }: TasksKanbanBoardProps) {
   const [deleteModalTaskId, setDeleteModalTaskId] = useState<string | null>(null);
   const [deleteModalTaskName, setDeleteModalTaskName] = useState<string | null>(null);
 
-  const handleTrashClick = (taskId: string, taskName: string) => {
+  // Memoize columns to avoid unnecessary recalculations
+  const columns = useMemo(() => {
+    const grouped: Record<string, Task[]> = {};
+    STATUS_LABELS.forEach(status => {
+      grouped[status] = tasks.filter(t => t.status === status);
+    });
+    return grouped;
+  }, [tasks]);
+
+  const handleTrashClick = useCallback((taskId: string, taskName: string) => {
     setDeleteModalTaskId(taskId);
     setDeleteModalTaskName(taskName);
-  };
+  }, []);
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     if (onDeleteTask && deleteModalTaskId) {
       onDeleteTask(deleteModalTaskId);
     }
     setDeleteModalTaskId(null);
     setDeleteModalTaskName(null);
-  };
+  }, [onDeleteTask, deleteModalTaskId]);
 
-  const handleCancelDelete = () => {
+  const handleCancelDelete = useCallback(() => {
     setDeleteModalTaskId(null);
     setDeleteModalTaskName(null);
-  };
+  }, []);
 
-  const tasksByStatus = STATUS_LABELS.map(status => ({
-    status,
-    tasks: tasks.filter(t => t.status === status),
-  }));
+  // Only for local UI feedback, not for persistence
+  const [localColumns, setLocalColumns] = useState<Record<string, Task[]>>(columns);
+  useEffect(() => {
+    setLocalColumns(columns);
+  }, [columns]);
+
+  const onDragEnd = useCallback((result: DropResult) => {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+    const sourceCol = Array.from(localColumns[source.droppableId]);
+    const destCol = Array.from(localColumns[destination.droppableId]);
+    const [removed] = sourceCol.splice(source.index, 1);
+    removed.status = destination.droppableId;
+    destCol.splice(destination.index, 0, removed);
+    const newColumns = {
+      ...localColumns,
+      [source.droppableId]: sourceCol,
+      [destination.droppableId]: destCol,
+    };
+    setLocalColumns(newColumns);
+    if (onTaskStatusChange) {
+      onTaskStatusChange(removed.id, destination.droppableId, destination.index);
+    }
+  }, [localColumns, onTaskStatusChange]);
 
   return (
     <>
       {deleteModalTaskId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" aria-modal="true" role="dialog">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40" onClick={handleConfirmDelete} aria-modal="true" role="dialog">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm" onClick={e => e.stopPropagation()} tabIndex={-1}>
             <h2 className="text-lg font-bold mb-4 text-center">تأكيد حذف المهمة</h2>
             <p className="mb-6 text-center text-gray-700">هل أنت متأكد أنك تريد حذف المهمة <span className="font-semibold text-red-600">{deleteModalTaskName}</span>؟ لا يمكن التراجع عن هذا الإجراء.</p>
@@ -54,97 +84,44 @@ export function TasksKanbanBoard({ tasks, users, projects, onDeleteTask }: Tasks
           </div>
         </div>
       )}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {tasksByStatus.map(({ status, tasks: statusTasks }) => (
-          <div key={status} className="bg-gray-50 rounded-lg p-4">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">{status}</h3>
-              <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{statusTasks.length}</span>
-            </div>
-            <div className="space-y-3">
-              {statusTasks.map((task) => {
-                const assignedUser = users.find((user) => user.id === task.assignedTo);
-                const project = projects.find((project) => project.id === task.projectId);
-                const isTaskOverdue = isOverdue(task.dueDate) && task.status !== 'مكتمل';
-                return (
-                  <div key={task.id} className="relative group">
-                    {/* Trash icon in top left */}
-                    {onDeleteTask && (
-                      <button
-                        type="button"
-                        className="absolute top-2 left-2 z-10 p-1 rounded hover:bg-red-100 text-red-500 transition-colors"
-                        aria-label="حذف المهمة"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTrashClick(task.id, task.name);
-                        }}
-                      >
-                        <Trash2Icon className="w-4 h-4" />
-                      </button>
-                    )}
-                    <Link href={`/tasks/${task.id}`} className="block" tabIndex={0} aria-label={`تفاصيل المهمة ${task.name}`}>
-                      <div className={`bg-white rounded-lg p-4 shadow-sm border-r-4 hover:shadow-md transition-shadow cursor-pointer group-hover:ring-2 group-hover:ring-blue-400 ${getPriorityColor(task.priority)}`}>
-                        <div className="mb-3">
-                          <h4 className="font-medium text-gray-900 line-clamp-2">{task.name}</h4>
-                          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{task.description}</p>
-                        </div>
-                        <div className="mb-2 flex items-center gap-2">
-                          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">{project?.name}</span>
-                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded flex items-center">
-                            <UserIcon className="h-3 w-3 ml-1" />{assignedUser?.name}
-                          </span>
-                        </div>
-                        {task.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-3">
-                            {task.tags.slice(0, 2).map((tag) => (
-                              <span key={tag} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">{tag}</span>
-                            ))}
-                            {task.tags.length > 2 && (
-                              <span className="text-xs text-gray-500">+{task.tags.length - 2}</span>
-                            )}
-                          </div>
-                        )}
-                        <div className="mb-3">
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs text-gray-600">التقدم</span>
-                            <span className="text-xs text-gray-900">{Math.round((task.completedHours / task.estimatedHours) * 100)}%</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-1.5">
-                            <div className="bg-blue-600 h-1.5 rounded-full" style={{width: `${(task.completedHours / task.estimatedHours) * 100}%`}}></div>
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                          <div className="flex items-center">
-                            <UserIcon className="h-3 w-3 ml-1" />
-                            <span>{assignedUser?.name}</span>
-                          </div>
-                          <div className={`flex items-center ${isTaskOverdue ? 'text-red-600' : ''}`}>
-                            <CalendarIcon className="h-3 w-3 ml-1" />
-                            <span>{new Date(task.dueDate).toLocaleDateString('ar-SA')}</span>
-                            {isTaskOverdue && <span className="mr-1">⚠️</span>}
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center mt-3">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(task.priority)}`}>{task.priority}</span>
-                          <div className="flex items-center text-xs text-gray-600">
-                            <ClockIcon className="h-3 w-3 ml-1" />
-                            <span>{task.completedHours}/{task.estimatedHours}س</span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {STATUS_LABELS.map((status) => (
+            <Droppable droppableId={status} key={status}>
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className={`bg-gray-50 rounded-lg p-4 min-h-[300px] transition-shadow ${snapshot.isDraggingOver ? 'ring-2 ring-blue-400' : ''}`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-gray-900">{status}</h3>
+                    <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">{localColumns[status]?.length || 0}</span>
                   </div>
-                );
-              })}
-              {statusTasks.length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <p className="text-sm">لا توجد مهام</p>
+                  <div className="space-y-3">
+                    {localColumns[status]?.map((task, idx) => (
+                      <TaskCard
+                        key={task.id}
+                        task={task}
+                        users={users}
+                        projects={projects}
+                        index={idx}
+                        onDeleteTask={handleTrashClick}
+                      />
+                    ))}
+                    {provided.placeholder}
+                    {(!localColumns[status] || localColumns[status].length === 0) && (
+                      <div className="text-center py-8 text-gray-500">
+                        <p className="text-sm">لا توجد مهام</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
-            </div>
-          </div>
-        ))}
-      </div>
+            </Droppable>
+          ))}
+        </div>
+      </DragDropContext>
     </>
   );
 }

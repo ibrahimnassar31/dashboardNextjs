@@ -117,5 +117,56 @@
       "اشرب",
       "نام"
     ]
+  },
+  {
+    "id": "71ad2c2e-1e35-463c-8bfc-c05c898d42b6",
+    "name": "laptop ",
+    "description": "ljlakfm lms, mls ",
+    "priority": "عالية",
+    "status": "معلق",
+    "dueDate": "2025-07-12",
+    "assignedTo": "user-2",
+    "projectId": "proj-3",
+    "estimatedHours": 51,
+    "completedHours": 0,
+    "tags": [
+      "جافا",
+      "سكالا",
+      "نيتو"
+    ]
+  },
+  {
+    "id": "6accdf0a-0329-4325-9f67-766bb46fe99c",
+    "name": "تطوير مواقع الويب",
+    "description": "lsjlfdjsdf",
+    "priority": "منخفضة ",
+    "status": "مكتمل ",
+    "dueDate": "2025-07-12",
+    "assignedTo": "user-3",
+    "projectId": "1751033133753",
+    "estimatedHours": 16,
+    "completedHours": 0,
+    "tags": [
+      "جافا",
+      "سكالا",
+      "نيتو"
+    ]
+  },
+  {
+    "id": "f307fb14-70e2-445a-bcf3-b83b10604876",
+    "name": "تطوير مواقع الويب",
+    "description": "سبيتب",
+    "priority": "عالية",
+    "status": "لم يبدأ",
+    "dueDate": "2025-07-04",
+    "assignedTo": "user-3",
+    "projectId": "1751033133753",
+    "estimatedHours": 1,
+    "completedHours": 0,
+    "tags": [
+      "جافا",
+      "سكالا",
+      "نيتو"
+    ]
   }
 ]
