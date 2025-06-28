@@ -10,7 +10,11 @@
     "assignedTo": "user-1",
     "estimatedHours": 40,
     "completedHours": 25,
-    "tags": ["frontend", "ui", "design"]
+    "tags": [
+      "frontend",
+      "ui",
+      "design"
+    ]
   },
   {
     "id": "task-2",
@@ -23,7 +27,11 @@
     "assignedTo": "user-2",
     "estimatedHours": 30,
     "completedHours": 0,
-    "tags": ["backend", "api", "integration"]
+    "tags": [
+      "backend",
+      "api",
+      "integration"
+    ]
   },
   {
     "id": "task-3",
@@ -36,7 +44,11 @@
     "assignedTo": "user-1",
     "estimatedHours": 20,
     "completedHours": 0,
-    "tags": ["testing", "qa", "quality"]
+    "tags": [
+      "testing",
+      "qa",
+      "quality"
+    ]
   },
   {
     "id": "task-4",
@@ -49,7 +61,11 @@
     "assignedTo": "user-2",
     "estimatedHours": 25,
     "completedHours": 25,
-    "tags": ["marketing", "content", "design"]
+    "tags": [
+      "marketing",
+      "content",
+      "design"
+    ]
   },
   {
     "id": "task-5",
@@ -62,6 +78,44 @@
     "assignedTo": "user-3",
     "estimatedHours": 15,
     "completedHours": 15,
-    "tags": ["marketing", "social-media", "advertising"]
+    "tags": [
+      "marketing",
+      "social-media",
+      "advertising"
+    ]
+  },
+  {
+    "id": "e2cbd8c9-e44f-4e8a-bf9f-aa38767c1766",
+    "name": "مهمة ابراهيم اجبارة",
+    "description": "مهمتي",
+    "priority": "منخفضة ",
+    "status": "لم يبدا",
+    "dueDate": "2025-06-11",
+    "assignedTo": "user-2",
+    "projectId": "1751033133753",
+    "estimatedHours": 19,
+    "completedHours": 0,
+    "tags": [
+      "كول",
+      "اشرب",
+      "نام"
+    ]
+  },
+  {
+    "id": "d2c91d01-3f71-4a35-8622-9d2210823e81",
+    "name": "Coffee Maker",
+    "description": "sljf sjl fjs",
+    "priority": "منخفضة ",
+    "status": "قيد التنفيذ",
+    "dueDate": "2025-07-12",
+    "assignedTo": "user-3",
+    "projectId": "proj-3",
+    "estimatedHours": 19,
+    "completedHours": 0,
+    "tags": [
+      "كول",
+      "اشرب",
+      "نام"
+    ]
   }
 ]

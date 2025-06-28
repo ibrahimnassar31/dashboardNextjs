@@ -15,3 +15,19 @@ export async function GET() {
     );
   }
 }
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const filePath = path.join(process.cwd(), 'data', 'projects.json');
+    const fileContents = await fs.readFile(filePath, 'utf8');
+    const projects = JSON.parse(fileContents);
+    const newProject = { ...body, id: String(Date.now()) };
+    projects.push(newProject);
+    await fs.writeFile(filePath, JSON.stringify(projects, null, 2), 'utf8');
+    return NextResponse.json({ success: true, project: newProject });
+  } catch (error: any) {
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+

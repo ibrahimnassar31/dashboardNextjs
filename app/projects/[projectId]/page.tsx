@@ -53,7 +53,7 @@ export default async function ProjectDetailPage(props: any) {
       <nav className="flex items-center space-x-2 space-x-reverse text-sm text-gray-500">
         <Link href="/projects" className="hover:text-gray-700">المشاريع</Link>
         <ArrowRightIcon className="h-4 w-4" />
-        <span className="text-gray-900">{project.name}</span>
+        <span className="text-gray-900 pr-1">{project.name}</span>
       </nav>
 
       {/* Project Header */}
@@ -152,7 +152,7 @@ export default async function ProjectDetailPage(props: any) {
                     </div>
 
                     {/* Task Progress */}
-                    <div className="mt-3">
+                    <div className="mt-4">
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-xs text-gray-600">التقدم</span>
                         <span className="text-xs text-gray-900">

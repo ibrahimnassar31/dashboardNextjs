@@ -9,8 +9,15 @@
     "endDate": "2025-07-30",
     "progress": 65,
     "budget": 50000,
-    "team": ["user-1", "user-2"],
-    "tasks": ["task-1", "task-2", "task-3"]
+    "team": [
+      "user-1",
+      "user-2"
+    ],
+    "tasks": [
+      "task-1",
+      "task-2",
+      "task-3"
+    ]
   },
   {
     "id": "proj-2",
@@ -22,8 +29,14 @@
     "endDate": "2025-06-10",
     "progress": 100,
     "budget": 25000,
-    "team": ["user-2", "user-3"],
-    "tasks": ["task-4", "task-5"]
+    "team": [
+      "user-2",
+      "user-3"
+    ],
+    "tasks": [
+      "task-4",
+      "task-5"
+    ]
   },
   {
     "id": "proj-3",
@@ -35,7 +48,36 @@
     "endDate": "2025-12-31",
     "progress": 0,
     "budget": 75000,
-    "team": ["user-1", "user-3"],
+    "team": [
+      "user-1",
+      "user-3"
+    ],
     "tasks": []
+  },
+  {
+    "name": "ibrahim ijbara nassar",
+    "description": "تصميم ",
+    "priority": "عالية",
+    "status": "معلق",
+    "startDate": "2025-06-18",
+    "endDate": "2025-07-08",
+    "budget": 7,
+    "team": [],
+    "progress": 0,
+    "tasks": [],
+    "id": "1751033133753"
+  },
+  {
+    "name": "تطوير مواقع الويب",
+    "description": "تصيمم ",
+    "priority": "متوسطة",
+    "status": "مكتمل",
+    "startDate": "2025-06-12",
+    "endDate": "2025-07-01",
+    "budget": 11,
+    "team": [],
+    "progress": 0,
+    "tasks": [],
+    "id": "1751087021520"
   }
 ]

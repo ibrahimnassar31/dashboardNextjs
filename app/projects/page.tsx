@@ -1,37 +1,65 @@
-import { getProjects } from '@/lib/data';
-import Link from 'next/link';
-import { CalendarIcon, UsersIcon, DollarSignIcon } from 'lucide-react';
+"use client";
+import { useState, useEffect } from 'react';
+import { ProjectsGrid } from '@/components/ProjectsGrid';
+import { ProjectForm } from '@/components/ProjectForm';
 
-function getPriorityColor(priority: string) {
-  switch (priority) {
-    case 'عالية':
-      return 'bg-red-100 text-red-800';
-    case 'متوسطة':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'منخفضة':
-      return 'bg-green-100 text-green-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}
+export default function ProjectsPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
 
-function getStatusColor(status: string) {
-  switch (status) {
-    case 'مكتمل':
-      return 'bg-green-100 text-green-800';
-    case 'قيد التقدم':
-      return 'bg-blue-100 text-blue-800';
-    case 'مخطط':
-      return 'bg-gray-100 text-gray-800';
-    case 'معلق':
-      return 'bg-yellow-100 text-yellow-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-}
+  useEffect(() => {
+    async function fetchProjects() {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+      setProjects(data);
+    }
+    fetchProjects();
+  }, []);
 
-export default async function ProjectsPage() {
-  const projects = await getProjects();
+  const handleAddProject = async (newProject: any) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProject),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setShowModal(false);
+        setProjects((prev) => [...prev, data.project]);
+      } else {
+        setError(data.error || 'حدث خطأ أثناء إضافة المشروع');
+      }
+    } catch (err: any) {
+      setError('حدث خطأ أثناء الاتصال بالخادم');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        setProjects((prev) => prev.filter((p) => String(p.id) !== String(id)));
+      } else {
+        setError(data.error || 'حدث خطأ أثناء الحذف');
+        throw new Error(data.error || 'حدث خطأ أثناء الحذف');
+      }
+    } catch (err: any) {
+      setError('حدث خطأ أثناء الاتصال بالخادم');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -41,77 +69,38 @@ export default async function ProjectsPage() {
           <h1 className="text-3xl font-bold text-gray-900">المشاريع</h1>
           <p className="text-gray-600 mt-2">إدارة ومتابعة جميع المشاريع</p>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          onClick={() => setShowModal(true)}
+        >
           مشروع جديد
         </button>
       </div>
-
+      {/* Modal for adding new project */}
+      {showModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+          onClick={() => setShowModal(false)}
+          aria-modal="true"
+          role="dialog"
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md"
+            onClick={e => e.stopPropagation()}
+            tabIndex={-1}
+          >
+            <h2 className="text-xl font-bold mb-8">إضافة مشروع جديد</h2>
+            <ProjectForm
+              onSubmit={handleAddProject}
+              loading={loading}
+              error={error}
+              onCancel={() => setShowModal(false)}
+            />
+          </div>
+        </div>
+      )}
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <Link key={project.id} href={`/projects/${project.id}`}>
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer">
-              {/* Project Header */}
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
-                  {project.name}
-                </h3>
-                <div className="flex gap-2">
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getPriorityColor(project.priority)}`}>
-                    {project.priority}
-                  </span>
-                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(project.status)}`}>
-                    {project.status}
-                  </span>
-                </div>
-              </div>
-
-              {/* Project Description */}
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                {project.description}
-              </p>
-
-              {/* Progress Bar */}
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-medium text-gray-700">التقدم</span>
-                  <span className="text-sm font-medium text-gray-900">{project.progress}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                    style={{width: `${project.progress}%`}}
-                  ></div>
-                </div>
-              </div>
-
-              {/* Project Meta */}
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-gray-600">
-                  <CalendarIcon className="h-4 w-4 ml-2" />
-                  <span>من {new Date(project.startDate).toLocaleDateString('ar-SA')} إلى {new Date(project.endDate).toLocaleDateString('ar-SA')}</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <UsersIcon className="h-4 w-4 ml-2" />
-                  <span>{project.team.length} عضو في الفريق</span>
-                </div>
-                <div className="flex items-center text-sm text-gray-600">
-                  <DollarSignIcon className="h-4 w-4 ml-2" />
-                  <span>{project.budget.toLocaleString()} ريال</span>
-                </div>
-              </div>
-
-              {/* Tasks Summary */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">المهام</span>
-                  <span className="font-medium text-gray-900">{project.tasks.length} مهام</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <ProjectsGrid projects={projects} onDelete={handleDeleteProject} />
 
       {/* Empty State */}
       {projects.length === 0 && (
@@ -124,7 +113,7 @@ export default async function ProjectsPage() {
           <h3 className="mt-2 text-sm font-medium text-gray-900">لا توجد مشاريع</h3>
           <p className="mt-1 text-sm text-gray-500">ابدأ بإنشاء مشروع جديد.</p>
           <div className="mt-6">
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" onClick={() => setShowModal(true)}>
               مشروع جديد
             </button>
           </div>
