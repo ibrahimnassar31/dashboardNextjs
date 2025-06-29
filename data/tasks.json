@@ -153,20 +153,20 @@
     ]
   },
   {
-    "id": "f307fb14-70e2-445a-bcf3-b83b10604876",
-    "name": "تطوير مواقع الويب",
-    "description": "سبيتب",
-    "priority": "عالية",
-    "status": "لم يبدأ",
-    "dueDate": "2025-07-04",
-    "assignedTo": "user-3",
+    "id": "1e50c0d6-3cbe-40eb-9286-40abccbbee26",
+    "name": "بكسة بندورة",
+    "description": "هاي",
+    "priority": "منخفضة ",
+    "status": "مكتمل",
+    "dueDate": "2025-07-11",
+    "assignedTo": "ccfc03ef-cd79-44ce-be37-5707411b08dc",
     "projectId": "1751033133753",
-    "estimatedHours": 1,
+    "estimatedHours": 16,
     "completedHours": 0,
     "tags": [
-      "جافا",
-      "سكالا",
-      "نيتو"
+      "كول",
+      "اشرب",
+      "نام"
     ]
   }
 ]

@@ -14,8 +14,7 @@ import {
   LineChart,
   Line,
   ResponsiveContainer,
-  Area,
-  AreaChart
+
 } from 'recharts';
 
 interface ChartsSectionProps {

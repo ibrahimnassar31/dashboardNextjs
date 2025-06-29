@@ -21,7 +21,6 @@ export default async function ReportsPage() {
     { name: 'لم يبدأ', value: stats.notStartedTasks, color: '#6B7280' },
   ];
 
-  // Project progress data
   const projectProgressData = projects.map(project => ({
     name: project.name,
     progress: project.progress,
@@ -62,7 +61,6 @@ export default async function ReportsPage() {
     })
   );
 
-  // Monthly progress simulation (mock data)
   const monthlyProgress = [
     { month: 'يناير', projects: 2, tasks: 8 },
     { month: 'فبراير', projects: 3, tasks: 12 },
